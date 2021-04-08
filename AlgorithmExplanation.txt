@@ -30,37 +30,37 @@ First we find the errors:
     - We look for the missing types  in the password. If we find no digit, lower case letter or upper case letter in the sequence, we add a corresponding string to a list
         (i.e. "Fox" would have the list ["number"], chicken would have ["upperCase", "number"])
 
-After we found the errors we use the available action as efficiently as possible to solve the errors
+After we found the errors we use the available actions as efficiently as possible to solve the errors
     - The length of the password can be fixed by either insertion or deletion.
     - The missing type errors can be fixed by insertion or replacement
     - The repeating sequence error can be fixed by any action, but at varying efficiency:
         - The most efficient way of fixing a repeating sequence is through replacement. A single replacement can solve a sequence of 5 characters ("aaaaa", we replace the middle character -> "aa*aa").
-        To handle longer sequences, we would always replace a character in the third position ("aaaaaa" -> "aa*aa*"). This is not the only solution, but it is the most efficient way of breaking up a repeating sequence.
-        This also means that a single replacement would reduce the length of a sequence by 3 ("aaaaaa" -> "aa*aaa", a sequence fo 6 is reduces to 3)
-        - The next action is insertions. Insertions are somewhat less efficient than replacements, since they can only reduce the length of a repeating sequence by 2 ("aaaaaa" -> "aa+aaaa").
+        To handle longer sequences, we would always replace a character in every third position ("aaaaaa" -> "aa*aa*"). This is not the only solution, but it is the most efficient way of breaking up a repeating sequence.
+        This also means that a single replacement would reduce the length of a sequence by 3 ("aaaaaa" -> "aa*aaa", a sequence fo 6 is reduced to 3)
+        - The next action is insertion. Insertions are somewhat less efficient than replacements, since they can only reduce the length of a repeating sequence by 2 ("aaaaaa" -> "aa+aaaa").
         One insertion would be able to handle a sequence 4
         - Deletions are the least efficient method, since they only reduce the length of a sequence by one. One insertion can solve a sequence error of 3
 
     We have to use our actions as efficiently as possible, so we use the fact that a single action can contribute to each category of errors.
         - We sort the repeating errors list in ascending order
-        - First we solve the length error, if we have one. since there is no variation here. If the password is too short we apply insertions, if it is too long, we apply deletions.
+        - First we solve the length error, if we have one, since there is no variation here. If the password is too short we apply insertions, if it is too long, we apply deletions.
         Meanwhile we check if the applied actions solved other problems from the other two categories:
             - A deletion would reduce the length of a repeating sequence by one. This is our first number in the list in which we keep track of the repeating sequences.
             We decrease the number by one, and if it falls below 3, we delete it (meaning that sequence is solved).
             - An insertion would reduce the length of a repeating sequence by two. We decrease the first number in the list of repeating sequence errors by 2, and
             delete it if it falls below 3. We also check if there are missing type errors. If there are, we
             remove one, since we can solve it by inserting a character of that type (we don't have to know the exact character we insert.
-            Choosing one that would not create a new repeating sequence problem is always possible since there are enough different characters of every types).
+            Choosing one that would not create a new repeating sequence problem is always possible since there are enough different characters of every type).
 
         - After we solved the length error, we move on to the repeating sequences errors. We solve these by insertions because they are the most efficient way, they can also solve
         missing type errors, if any remained, and we don't risk reintroducing length errors. Each insertion decreases the length of a sequence error by 3. If the length falls below 3, we delete the error. We also check if
         we can solve a missing type error, same way as we did with addition. We presume that the replaced character was not the only one of its type (this is always possible since
-        the length of the password is minimum 6. We can always select a character of a type that has at least 2 instances in the password)
+        the minimum length of the password is 6. We can always select a character of a type that has at least 2 instances in the password)
 
         * Note that we want to use our actions efficiently when dealing with repeating errors sequences. I.e. the 21 characters long password "...bbbbbaaa...",
-        would have the sequences "bbbbb" and "aaa",the first being 5 characters, the second one 4 characters long. We apply deletions first, bringing "bbbbb" down to "bbbb". Then we would
+        would have the sequences "bbbbb" and "aaa", the first being 5 characters, the second one 4 characters long. We apply deletions first, bringing "bbbbb" down to "bbbb". Then we would
         need a replacement to solve "bbbb" and another one to solve "aaa", bringing us to a total of 3 actions. If we applied the deletion to "aaa", we would solve the problem, and
-        we sould only need a single insertion to solve "bbbb", for a total of 2 actions. This is why we sort the list of repeating sequence errors first, and go through the actions in the
+        we would only need a single insertion to solve "bbbb", for a total of 2 actions. This is why we sort the list of repeating sequence errors first, and go through the actions in the
         order: deletions, insertions, replacements
 
         - When we run out of repeating sequence errors, we can move on to missing type errors. Each of these are solved by a replacement, so we don't risk reintroducing length errors
