@@ -15,10 +15,12 @@ class PasswordChecker:
     def findProblems(self, s):
         '''
         Find the errors in the string. Sets the attributes of the class:
-            - lengthError to a positive number representing how many characters are in addition to 20 or a negative number
-            representing how many are needed to reach the count of 6
-            - repeatingErrors to a list of numbers, each representing a separate sequence of that many of the same characters
-            - missingErrors to a list of the possible strings "upperCase", "lowerCase", "number", containing the types of characters missing
+            - lengthError to a positive number representing how many characters are in addition to 20 or a negative
+            number representing how many are needed to reach the count of 6
+            - repeatingErrors to a list of numbers, each representing a separate sequence of that many of the same
+            characters
+            - missingErrors to a list of the possible strings "upperCase", "lowerCase", "number", containing the types
+             of characters missing
         :param s: password
         :return: None
         '''
@@ -51,7 +53,8 @@ class PasswordChecker:
         if s[0].isnumeric():
             foundNumber = True
 
-        # Starting from the second character, compare the characters to the previous ones and find repeating sequences. Also check types
+        # Starting from the second character, compare the characters to the previous ones and find repeating sequences.
+        # Also check types
         for i in range(1, len(s)):
             if s[i].isupper():
                 foundUpperCase = True
@@ -89,11 +92,14 @@ class PasswordChecker:
     def doInsertion(self):
         self.insertions += 1
 
-        # Doing an insertion means we increase the length of the password. We increase lengthError by 1, meaning that we get closer to the value 0, which means no length error
+        # Doing an insertion means we increase the length of the password.
+        # We increase lengthError by 1, meaning that we get closer to the value 0, which means no length error
         self.lengthError += 1
 
-        # If we do an insertion, we might as well do it so we solve a repeating error. We insert the new character after the first 2 repeating ones, which means we decrease the
-        # number of repeating characters by 2. If the length of the repeating sequence falls below 3, we delete it (since it is no longer a problem)
+        # If we do an insertion, we might as well do it so we solve a repeating error.
+        # We insert the new character after the first 2 repeating ones, which means we decrease the
+        # number of repeating characters by 2.
+        # If the length of the repeating sequence falls below 3, we delete it (since it is no longer a problem)
         if self.repeatingErrors:
             self.repeatingErrors[0] -= 2
             if self.repeatingErrors[0] < 3:
@@ -106,10 +112,12 @@ class PasswordChecker:
     def doDeletion(self):
         self.deletions += 1
 
-        # Doing an insertion means we decrease the length of the password. We decrese lengthError by 1, meaning that we get closer to the value 0, which means no length error
+        # Doing an insertion means we decrease the length of the password.
+        # We decrease lengthError by 1, meaning that we get closer to the value 0, which means no length error
         self.lengthError -= 1
 
-        # A deletion can decrease the length of a sequence by 1. Our repeating sequence error is decreased by 1, and if it falls below 3, we delete it
+        # A deletion can decrease the length of a sequence by 1.
+        # Our repeating sequence error is decreased by 1, and if it falls below 3, we delete it
         if self.repeatingErrors:
             self.repeatingErrors[0] -= 1
             if self.repeatingErrors[0] < 3:
@@ -137,15 +145,18 @@ class PasswordChecker:
         self.deletions = 0
         self.replacements = 0
 
-        # If lengthError is greater than 0 (length of password greater than 20) then we apply deletions. This can also solve repeating sequence errors
+        # If lengthError is greater than 0 (length of password greater than 20) then we apply deletions.
+        # This can also solve repeating sequence errors
         while self.lengthError > 0:
             self.doDeletion()
 
-        # If lengthError is less than 0 (length of password is less than 6) then we apply insertions. This can also solve repeating sequence and missing type errors
+        # If lengthError is less than 0 (length of password is less than 6) then we apply insertions.
+        # This can also solve repeating sequence and missing type errors
         while self.lengthError < 0:
             self.doInsertion()
 
-        # If there are repeating errors remaining, we use replacement to solve them. This can also solve missing type errors
+        # If there are repeating errors remaining, we use replacement to solve them.
+        # This can also solve missing type errors
         while len(self.repeatingErrors) > 0:
             self.doReplacement()
 
